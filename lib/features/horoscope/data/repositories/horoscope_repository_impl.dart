@@ -1,0 +1,23 @@
+import 'package:dreamscope/features/horoscope/data/datasources/horoscope_remote_data_source.dart';
+import 'package:dreamscope/features/horoscope/domain/entities/horoscope.dart';
+import 'package:dreamscope/features/horoscope/domain/repositories/horoscope_repository.dart';
+
+class HoroscopeRepositoryImpl implements HoroscopeRepository {
+  final HoroscopeRemoteDataSource remoteDataSource;
+
+  HoroscopeRepositoryImpl({required this.remoteDataSource});
+
+  @override
+  Future<Horoscope> getHoroscope({
+    required String sign,
+    required String period,
+    required String languageCode,
+  }) async {
+    final model = await remoteDataSource.getHoroscope(
+      sign: sign,
+      period: period,
+      languageCode: languageCode,
+    );
+    return model.toEntity();
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "@@locale": "en",
+  "appTitle": "DreamScope",
+  "dreamsTab": "Dreams",
+  "horoscopeTab": "Horoscope",
+  "settingsTab": "Settings",
+  "dreamListTitle": "My Dreams",
+  "horoscopeTitle": "Horoscope",
+  "settingsTitle": "Settings",
+  "addDreamHint": "Tap to add a new dream",
+  "newDreamTitle": "New Dream",
+  "dreamTitleLabel": "Dream Title",
+  "dreamTitleHint": "e.g., Flying over the city",
+  "dreamContentLabel": "Dream Content",
+  "dreamContentHint": "Describe your dream here...",
+  "saveAndAnalyzeButton": "Save & Analyze",
+  "analyzingDream": "Analyzing your dream...",
+  "analysisComplete": "Analysis Complete",
+  "dreamAnalysis": "Dream Analysis",
+  "selectHoroscopeSign": "Select Sign",
+  "selectHoroscopePeriod": "Select Period",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "getHoroscopeButton": "Get Horoscope",
+  "languageSettings": "Language",
+  "errorOccurred": "An error occurred",
+  "tryAgain": "Try Again",
+  "noDreamsMessage": "You haven't saved any dreams yet. Tap the + button to add one!",
+  "horoscopeFor": "Horoscope for {sign}",
+  "@horoscopeFor": {
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      }
+    }
+  }
+} 

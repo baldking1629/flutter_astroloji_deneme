@@ -1,0 +1,38 @@
+{
+  "@@locale": "tr",
+  "appTitle": "DreamScope",
+  "dreamsTab": "Rüyalar",
+  "horoscopeTab": "Burç Yorumu",
+  "settingsTab": "Ayarlar",
+  "dreamListTitle": "Rüyalarım",
+  "horoscopeTitle": "Burç Yorumu",
+  "settingsTitle": "Ayarlar",
+  "addDreamHint": "Yeni bir rüya eklemek için dokunun",
+  "newDreamTitle": "Yeni Rüya",
+  "dreamTitleLabel": "Rüya Başlığı",
+  "dreamTitleHint": "örn. Şehrin üzerinde uçmak",
+  "dreamContentLabel": "Rüya İçeriği",
+  "dreamContentHint": "Rüyanızı buraya yazın...",
+  "saveAndAnalyzeButton": "Kaydet & Analiz Et",
+  "analyzingDream": "Rüyanız analiz ediliyor...",
+  "analysisComplete": "Analiz Tamamlandı",
+  "dreamAnalysis": "Rüya Analizi",
+  "selectHoroscopeSign": "Burç Seçin",
+  "selectHoroscopePeriod": "Periyot Seçin",
+  "daily": "Günlük",
+  "weekly": "Haftalık",
+  "monthly": "Aylık",
+  "getHoroscopeButton": "Yorumu Getir",
+  "languageSettings": "Dil",
+  "errorOccurred": "Bir hata oluştu",
+  "tryAgain": "Tekrar Dene",
+  "noDreamsMessage": "Henüz hiç rüya kaydetmediniz. Eklemek için + butonuna dokunun!",
+  "horoscopeFor": "{sign} için Burç Yorumu",
+  "@horoscopeFor": {
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      }
+    }
+  }
+} 
