@@ -58,6 +58,9 @@ dependencies:
   sembast: ^3.6.0
   path_provider: ^2.1.2
   
+  # Environment Variables
+  flutter_dotenv: ^5.1.0
+  
   # For IDs
   uuid: ^4.3.3
 
@@ -89,6 +92,7 @@ flutter:
   generate: true
   assets:
     - assets/app_icon.png
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

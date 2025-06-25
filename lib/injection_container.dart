@@ -27,6 +27,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:path/path.dart';
+import 'dart:math';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final sl = GetIt.instance;
 
@@ -56,11 +58,19 @@ Future<void> init() async {
 
   sl.registerLazySingleton(() => Dio());
 
-  // IMPORTANT: Add your Gemini API Key via --dart-define
-  const apiKey = String.fromEnvironment('GEMINI_API_KEY');
+  // Get API key from .env file
+  final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+
+  // Debug için API key durumunu kontrol et
+  print('GEMINI_API_KEY length: ${apiKey.length}');
+  print(
+      'GEMINI_API_KEY starts with: ${apiKey.isNotEmpty ? apiKey.substring(0, min(10, apiKey.length)) : "EMPTY"}');
+
   if (apiKey.isEmpty) {
-    throw Exception('Please provide a GEMINI_API_KEY environment variable.');
+    throw Exception(
+        'GEMINI_API_KEY not found in .env file. Please add GEMINI_API_KEY=your_api_key to .env file');
   }
+
   sl.registerLazySingleton(
     () => GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey),
   );
