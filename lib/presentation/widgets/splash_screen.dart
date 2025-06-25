@@ -12,30 +12,14 @@ class SplashScreen extends StatelessWidget {
       home: Scaffold(
         backgroundColor: AppTheme.darkTheme.scaffoldBackgroundColor,
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white10,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                padding: const EdgeInsets.all(32),
-                child: Icon(Icons.nightlight_round, size: 64, color: AppTheme.darkTheme.colorScheme.secondary),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                'DreamScope',
-                style: AppTheme.darkTheme.textTheme.displayLarge?.copyWith(
-                  color: AppTheme.darkTheme.colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 32,
-                ),
-              ),
-            ],
+          child: Image.asset(
+            'assets/app_icon.png',
+            width: 180,
+            height: 180,
+            fit: BoxFit.contain,
           ),
         ),
       ),
     );
   }
-} 
+}
