@@ -8,41 +8,31 @@ import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     initialLocation: '/dreams',
     navigatorKey: _rootNavigatorKey,
     routes: [
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          return ScaffoldWithNavBar(child: child);
-        },
-        routes: [
-          GoRoute(
-            path: '/dreams',
-            pageBuilder:
-                (context, state) =>
-                    const NoTransitionPage(child: DreamListPage()),
-          ),
-          GoRoute(
-            path: '/horoscope',
-            pageBuilder:
-                (context, state) =>
-                    const NoTransitionPage(child: HoroscopePage()),
-          ),
-          GoRoute(
-            path: '/settings',
-            pageBuilder:
-                (context, state) =>
-                    const NoTransitionPage(child: SettingsPage()),
-          ),
-        ],
+      GoRoute(
+        path: '/dreams',
+        builder: (context, state) => const ScaffoldWithNavBar(
+          child: DreamListPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/horoscope',
+        builder: (context, state) => const ScaffoldWithNavBar(
+          child: HoroscopePage(),
+        ),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const ScaffoldWithNavBar(
+          child: SettingsPage(),
+        ),
       ),
       GoRoute(
         path: '/add-dream',
-        parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AddDreamPage(),
       ),
     ],

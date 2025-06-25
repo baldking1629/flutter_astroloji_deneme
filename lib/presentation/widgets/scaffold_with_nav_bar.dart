@@ -9,6 +9,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
+    final theme = Theme.of(context);
 
     int currentIndex = 0;
     if (location.startsWith('/horoscope')) {
@@ -21,6 +22,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
+        backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
+        selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: theme.bottomNavigationBarTheme.unselectedItemColor,
         onTap: (index) {
           switch (index) {
             case 0:

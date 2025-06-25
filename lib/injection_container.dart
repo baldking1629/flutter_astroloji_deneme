@@ -16,11 +16,15 @@ import 'package:dreamscope/features/horoscope/domain/repositories/horoscope_repo
 import 'package:dreamscope/features/horoscope/domain/usecases/get_horoscope.dart';
 import 'package:dreamscope/features/horoscope/presentation/cubit/horoscope_cubit.dart';
 import 'package:dreamscope/features/settings/data/datasources/settings_local_data_source.dart';
+import 'package:dreamscope/features/settings/data/datasources/theme_local_data_source.dart';
 import 'package:dreamscope/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:dreamscope/features/settings/domain/repositories/settings_repository.dart';
 import 'package:dreamscope/features/settings/domain/usecases/get_locale.dart';
 import 'package:dreamscope/features/settings/domain/usecases/save_locale.dart';
+import 'package:dreamscope/features/settings/domain/usecases/get_theme.dart';
+import 'package:dreamscope/features/settings/domain/usecases/save_theme.dart';
 import 'package:dreamscope/presentation/app_blocs/locale/locale_cubit.dart';
+import 'package:dreamscope/presentation/app_blocs/theme/theme_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:path_provider/path_provider.dart';
@@ -41,13 +45,14 @@ Future<void> init() async {
   // Horoscope
   _registerHoroscopeFeature();
 
-  // Settings / Locale
+  // Settings / Locale / Theme
   _registerSettingsFeature();
 
   // --- Core ---
 
   // App Blocs
   sl.registerFactory(() => LocaleCubit(getLocale: sl(), saveLocale: sl()));
+  sl.registerFactory(() => ThemeCubit());
 
   // External
   final appDir = await getApplicationDocumentsDirectory();
@@ -124,14 +129,22 @@ void _registerSettingsFeature() {
   // Use cases
   sl.registerLazySingleton(() => GetLocale(sl()));
   sl.registerLazySingleton(() => SaveLocale(sl()));
+  sl.registerLazySingleton(() => GetTheme(sl()));
+  sl.registerLazySingleton(() => SaveTheme(sl()));
 
   // Repositories
   sl.registerLazySingleton<SettingsRepository>(
-    () => SettingsRepositoryImpl(localDataSource: sl()),
+    () => SettingsRepositoryImpl(
+      localDataSource: sl(),
+      themeLocalDataSource: sl(),
+    ),
   );
 
   // Data sources
   sl.registerLazySingleton<SettingsLocalDataSource>(
     () => SembastSettingsLocalDataSource(sl()),
+  );
+  sl.registerLazySingleton<ThemeLocalDataSource>(
+    () => SembastThemeLocalDataSource(sl()),
   );
 }
