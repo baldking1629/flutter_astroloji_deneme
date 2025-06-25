@@ -31,20 +31,21 @@ class _HoroscopeViewState extends State<HoroscopeView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final signs = [
-      'Aries',
-      'Taurus',
-      'Gemini',
-      'Cancer',
-      'Leo',
-      'Virgo',
-      'Libra',
-      'Scorpio',
-      'Sagittarius',
-      'Capricorn',
-      'Aquarius',
-      'Pisces'
+    final signKeys = [
+      'aries',
+      'taurus',
+      'gemini',
+      'cancer',
+      'leo',
+      'virgo',
+      'libra',
+      'scorpio',
+      'sagittarius',
+      'capricorn',
+      'aquarius',
+      'pisces'
     ];
+    final signs = signKeys.map((key) => l10n.getString(key)).toList();
     final periods = {
       l10n.daily: 'daily',
       l10n.weekly: 'weekly',
@@ -67,9 +68,12 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                     DropdownButtonFormField<String>(
                       value: _selectedSign,
                       hint: Text(l10n.selectHoroscopeSign),
-                      items: signs.map((sign) {
-                        return DropdownMenuItem(value: sign, child: Text(sign));
-                      }).toList(),
+                      items: List.generate(signKeys.length, (i) {
+                        return DropdownMenuItem(
+                          value: signKeys[i],
+                          child: Text(signs[i]),
+                        );
+                      }),
                       onChanged: (value) =>
                           setState(() => _selectedSign = value),
                       isExpanded: true,
@@ -118,7 +122,8 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            l10n.horoscopeFor(state.horoscope.sign),
+                            l10n.horoscopeFor(
+                                l10n.getString(state.horoscope.sign)),
                             style: theme.textTheme.titleLarge,
                           ),
                           const SizedBox(height: 12),
@@ -162,5 +167,38 @@ class _HoroscopeViewState extends State<HoroscopeView> {
         ),
       ),
     );
+  }
+}
+
+extension HoroscopeL10nExtension on AppLocalizations {
+  String getString(String key) {
+    switch (key) {
+      case 'aries':
+        return this.aries;
+      case 'taurus':
+        return this.taurus;
+      case 'gemini':
+        return this.gemini;
+      case 'cancer':
+        return this.cancer;
+      case 'leo':
+        return this.leo;
+      case 'virgo':
+        return this.virgo;
+      case 'libra':
+        return this.libra;
+      case 'scorpio':
+        return this.scorpio;
+      case 'sagittarius':
+        return this.sagittarius;
+      case 'capricorn':
+        return this.capricorn;
+      case 'aquarius':
+        return this.aquarius;
+      case 'pisces':
+        return this.pisces;
+      default:
+        return key;
+    }
   }
 }

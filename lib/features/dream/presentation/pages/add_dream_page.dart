@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AddDreamPage extends StatelessWidget {
   const AddDreamPage({super.key});
@@ -28,12 +29,28 @@ class _AddDreamViewState extends State<AddDreamView> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void dispose() {
     _titleController.dispose();
     _contentController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      locale: Locale(AppLocalizations.of(context)!.localeName),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
   }
 
   @override
@@ -92,6 +109,24 @@ class _AddDreamViewState extends State<AddDreamView> {
                       validator: (value) =>
                           value!.isEmpty ? 'Content cannot be empty' : null,
                     ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            DateFormat.yMMMMd(l10n.localeName)
+                                .format(_selectedDate),
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed:
+                              isSubmitting ? null : () => _pickDate(context),
+                          icon: const Icon(Icons.calendar_today),
+                          label: Text('Tarih Seç'),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: isSubmitting
@@ -102,6 +137,7 @@ class _AddDreamViewState extends State<AddDreamView> {
                                       SubmitDream(
                                         title: _titleController.text,
                                         content: _contentController.text,
+                                        date: _selectedDate,
                                       ),
                                     );
                               }

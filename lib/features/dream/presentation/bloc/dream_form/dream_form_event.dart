@@ -10,9 +10,11 @@ abstract class DreamFormEvent extends Equatable {
 class SubmitDream extends DreamFormEvent {
   final String title;
   final String content;
+  final DateTime date;
 
-  const SubmitDream({required this.title, required this.content});
+  const SubmitDream(
+      {required this.title, required this.content, required this.date});
 
   @override
-  List<Object> get props => [title, content];
+  List<Object> get props => [title, content, date];
 }

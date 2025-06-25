@@ -28,7 +28,7 @@ class DreamFormBloc extends Bloc<DreamFormEvent, DreamFormState> {
         id: const Uuid().v4(),
         title: event.title,
         content: event.content,
-        date: DateTime.now(),
+        date: event.date,
         analysis: analysis,
       );
 

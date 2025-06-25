@@ -106,7 +106,7 @@ void _registerHoroscopeFeature() {
 
   // Data sources
   sl.registerLazySingleton<HoroscopeRemoteDataSource>(
-    () => MockHoroscopeRemoteDataSource(sl()),
+    () => GeminiHoroscopeRemoteDataSource(sl()),
   );
 }
 
