@@ -46,5 +46,21 @@
   "sagittarius": "Sagittarius",
   "capricorn": "Capricorn",
   "aquarius": "Aquarius",
-  "pisces": "Pisces"
+  "pisces": "Pisces",
+  "appLanguage": "App Language",
+  "turkish": "Turkish",
+  "english": "English",
+  "appearanceSettings": "Appearance",
+  "theme": "Theme",
+  "system": "System",
+  "light": "Light",
+  "dark": "Dark",
+  "appInfo": "App Info",
+  "version": "Version",
+  "developer": "Developer",
+  "sortDateDesc": "Newest → Oldest",
+  "sortDateAsc": "Oldest → Newest",
+  "sortTitleAsc": "A-Z",
+  "sortTitleDesc": "Z-A",
+  "selectDate": "Select Date"
 } 

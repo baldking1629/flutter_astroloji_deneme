@@ -15,20 +15,41 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/dreams',
-        builder: (context, state) => const ScaffoldWithNavBar(
-          child: DreamListPage(),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ScaffoldWithNavBar(child: DreamListPage()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
         ),
       ),
       GoRoute(
         path: '/horoscope',
-        builder: (context, state) => const ScaffoldWithNavBar(
-          child: HoroscopePage(),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ScaffoldWithNavBar(child: HoroscopePage()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
         ),
       ),
       GoRoute(
         path: '/settings',
-        builder: (context, state) => const ScaffoldWithNavBar(
-          child: SettingsPage(),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ScaffoldWithNavBar(child: SettingsPage()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
         ),
       ),
       GoRoute(

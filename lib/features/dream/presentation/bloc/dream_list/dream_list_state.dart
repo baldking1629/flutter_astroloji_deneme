@@ -12,9 +12,10 @@ class DreamListLoading extends DreamListState {}
 
 class DreamListLoaded extends DreamListState {
   final List<Dream> dreams;
-  const DreamListLoaded(this.dreams);
+  final DreamSortType sortType;
+  const DreamListLoaded(this.dreams, this.sortType);
   @override
-  List<Object> get props => [dreams];
+  List<Object> get props => [dreams, sortType];
 }
 
 class DreamListError extends DreamListState {

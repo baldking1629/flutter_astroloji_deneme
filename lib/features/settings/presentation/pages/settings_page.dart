@@ -21,9 +21,10 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ayarlar'),
+        title: Text(l10n.settingsTitle),
         elevation: 0,
       ),
       body: ListView(
@@ -32,28 +33,28 @@ class SettingsView extends StatelessWidget {
           // Dil Ayarları
           _buildSectionCard(
             context,
-            title: 'Dil Ayarları',
+            title: l10n.languageSettings,
             icon: Icons.language,
             children: [
               BlocBuilder<LocaleCubit, LocaleState>(
                 builder: (context, state) {
                   return _buildSettingTile(
                     context,
-                    title: 'Uygulama Dili',
+                    title: l10n.appLanguage,
                     subtitle: state.locale.languageCode == 'tr'
-                        ? 'Türkçe'
-                        : 'English',
+                        ? l10n.turkish
+                        : l10n.english,
                     trailing: DropdownButton<Locale>(
                       value: state.locale,
                       underline: Container(),
                       items: [
                         DropdownMenuItem(
                           value: const Locale('tr'),
-                          child: const Text('Türkçe'),
+                          child: Text(l10n.turkish),
                         ),
                         DropdownMenuItem(
                           value: const Locale('en'),
-                          child: const Text('English'),
+                          child: Text(l10n.english),
                         ),
                       ],
                       onChanged: (locale) {
@@ -73,7 +74,7 @@ class SettingsView extends StatelessWidget {
           // Tema Ayarları
           _buildSectionCard(
             context,
-            title: 'Görünüm Ayarları',
+            title: l10n.appearanceSettings,
             icon: Icons.palette,
             children: [
               BlocListener<ThemeCubit, ThemeState>(
@@ -84,23 +85,23 @@ class SettingsView extends StatelessWidget {
                   builder: (context, state) {
                     return _buildSettingTile(
                       context,
-                      title: 'Tema',
-                      subtitle: _getThemeDisplayName(state.mode),
+                      title: l10n.theme,
+                      subtitle: _getThemeDisplayNameL10n(state.mode, l10n),
                       trailing: DropdownButton<AppThemeMode>(
                         value: state.mode,
                         underline: Container(),
                         items: [
                           DropdownMenuItem(
                             value: AppThemeMode.system,
-                            child: const Text('Sistem'),
+                            child: Text(l10n.system),
                           ),
                           DropdownMenuItem(
                             value: AppThemeMode.light,
-                            child: const Text('Açık'),
+                            child: Text(l10n.light),
                           ),
                           DropdownMenuItem(
                             value: AppThemeMode.dark,
-                            child: const Text('Koyu'),
+                            child: Text(l10n.dark),
                           ),
                         ],
                         onChanged: (mode) {
@@ -121,19 +122,19 @@ class SettingsView extends StatelessWidget {
           // Uygulama Bilgileri
           _buildSectionCard(
             context,
-            title: 'Uygulama Bilgileri',
+            title: l10n.appInfo,
             icon: Icons.info,
             children: [
               _buildSettingTile(
                 context,
-                title: 'Versiyon',
+                title: l10n.version,
                 subtitle: '1.0.0',
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               _buildSettingTile(
                 context,
-                title: 'Geliştirici',
+                title: l10n.developer,
                 subtitle: 'DreamScope Team',
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
@@ -207,14 +208,14 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  String _getThemeDisplayName(AppThemeMode mode) {
+  String _getThemeDisplayNameL10n(AppThemeMode mode, AppLocalizations l10n) {
     switch (mode) {
       case AppThemeMode.system:
-        return 'Sistem temasını kullan';
+        return l10n.system;
       case AppThemeMode.light:
-        return 'Açık tema';
+        return l10n.light;
       case AppThemeMode.dark:
-        return 'Koyu tema';
+        return l10n.dark;
     }
   }
 }

@@ -7,3 +7,10 @@ abstract class DreamListEvent extends Equatable {
 }
 
 class LoadDreams extends DreamListEvent {}
+
+class ChangeSortOrder extends DreamListEvent {
+  final DreamSortType sortType;
+  const ChangeSortOrder(this.sortType);
+  @override
+  List<Object> get props => [sortType];
+}

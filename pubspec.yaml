@@ -63,6 +63,7 @@ dependencies:
   
   # For IDs
   uuid: ^4.3.3
+  intl_utils: ^2.8.10
 
 dev_dependencies:
   flutter_test:

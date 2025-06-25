@@ -27,6 +27,75 @@ class DreamListView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.dreamListTitle),
+        actions: [
+          BlocBuilder<DreamListBloc, DreamListState>(
+            builder: (context, state) {
+              DreamSortType sortType = DreamSortType.dateDesc;
+              if (state is DreamListLoaded) sortType = state.sortType;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: PopupMenuButton<DreamSortType>(
+                  tooltip: 'Sırala',
+                  icon: Icon(Icons.sort, color: theme.colorScheme.primary),
+                  onSelected: (type) {
+                    context.read<DreamListBloc>().add(ChangeSortOrder(type));
+                  },
+                  initialValue: sortType,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  color: theme.colorScheme.surface,
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: DreamSortType.dateDesc,
+                      child: Row(
+                        children: [
+                          Icon(Icons.schedule,
+                              size: 18, color: theme.colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text(l10n.sortDateDesc),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: DreamSortType.dateAsc,
+                      child: Row(
+                        children: [
+                          Icon(Icons.schedule_outlined,
+                              size: 18, color: theme.colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text(l10n.sortDateAsc),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: DreamSortType.titleAsc,
+                      child: Row(
+                        children: [
+                          Icon(Icons.sort_by_alpha,
+                              size: 18, color: theme.colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text(l10n.sortTitleAsc),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: DreamSortType.titleDesc,
+                      child: Row(
+                        children: [
+                          Icon(Icons.sort_by_alpha,
+                              size: 18, color: theme.colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Text(l10n.sortTitleDesc),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: BlocConsumer<DreamListBloc, DreamListState>(
         listener: (context, state) {

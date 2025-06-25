@@ -46,5 +46,21 @@
   "sagittarius": "Yay",
   "capricorn": "Oğlak",
   "aquarius": "Kova",
-  "pisces": "Balık"
+  "pisces": "Balık",
+  "appLanguage": "Uygulama Dili",
+  "turkish": "Türkçe",
+  "english": "İngilizce",
+  "appearanceSettings": "Görünüm Ayarları",
+  "theme": "Tema",
+  "system": "Sistem",
+  "light": "Açık",
+  "dark": "Koyu",
+  "appInfo": "Uygulama Bilgileri",
+  "version": "Versiyon",
+  "developer": "Geliştirici",
+  "sortDateDesc": "Yeni → Eski",
+  "sortDateAsc": "Eski → Yeni",
+  "sortTitleAsc": "A-Z",
+  "sortTitleDesc": "Z-A",
+  "selectDate": "Tarih Seç"
 } 

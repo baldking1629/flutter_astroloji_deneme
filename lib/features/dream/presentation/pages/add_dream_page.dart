@@ -123,7 +123,7 @@ class _AddDreamViewState extends State<AddDreamView> {
                           onPressed:
                               isSubmitting ? null : () => _pickDate(context),
                           icon: const Icon(Icons.calendar_today),
-                          label: Text('Tarih Seç'),
+                          label: Text(l10n.selectDate),
                         ),
                       ],
                     ),
