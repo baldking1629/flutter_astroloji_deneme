@@ -11,6 +11,7 @@ class GetHoroscope {
       sign: params.sign,
       period: params.period,
       languageCode: params.languageCode,
+      date: params.date,
     );
   }
 }
@@ -19,13 +20,15 @@ class GetHoroscopeParams extends Equatable {
   final String sign;
   final String period;
   final String languageCode;
+  final DateTime date;
 
   const GetHoroscopeParams({
     required this.sign,
     required this.period,
     required this.languageCode,
+    required this.date,
   });
 
   @override
-  List<Object?> get props => [sign, period, languageCode];
+  List<Object?> get props => [sign, period, languageCode, date];
 }

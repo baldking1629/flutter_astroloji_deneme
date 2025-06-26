@@ -99,6 +99,7 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                                         sign: _selectedSign!,
                                         period: _selectedPeriod!,
                                         languageCode: l10n.localeName,
+                                        date: DateTime.now(),
                                       );
                                 }
                               : null,
@@ -160,6 +161,7 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                                     sign: _selectedSign!,
                                     period: _selectedPeriod!,
                                     languageCode: l10n.localeName,
+                                    date: DateTime.now(),
                                   );
                             }
                           },

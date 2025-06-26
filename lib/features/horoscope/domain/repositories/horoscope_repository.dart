@@ -5,5 +5,6 @@ abstract class HoroscopeRepository {
     required String sign,
     required String period,
     required String languageCode,
+    required DateTime date,
   });
 }

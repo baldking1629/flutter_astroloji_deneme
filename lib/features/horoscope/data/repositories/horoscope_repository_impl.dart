@@ -12,11 +12,13 @@ class HoroscopeRepositoryImpl implements HoroscopeRepository {
     required String sign,
     required String period,
     required String languageCode,
+    required DateTime date,
   }) async {
     final model = await remoteDataSource.getHoroscope(
       sign: sign,
       period: period,
       languageCode: languageCode,
+      date: date,
     );
     return model.toEntity();
   }

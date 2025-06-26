@@ -14,6 +14,7 @@ class HoroscopeCubit extends Cubit<HoroscopeState> {
     required String sign,
     required String period,
     required String languageCode,
+    required DateTime date,
   }) async {
     emit(HoroscopeLoading());
     try {
@@ -21,6 +22,7 @@ class HoroscopeCubit extends Cubit<HoroscopeState> {
         sign: sign,
         period: period,
         languageCode: languageCode,
+        date: date,
       );
       final horoscope = await getHoroscope(params);
       emit(HoroscopeLoaded(horoscope));
