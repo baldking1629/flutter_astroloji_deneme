@@ -66,10 +66,7 @@ Future<void> init() async {
   // Get API key from .env file
   final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
 
-  // Debug için API key durumunu kontrol et
-  print('GEMINI_API_KEY length: ${apiKey.length}');
-  print(
-      'GEMINI_API_KEY starts with: ${apiKey.isNotEmpty ? apiKey.substring(0, min(10, apiKey.length)) : "EMPTY"}');
+  
 
   if (apiKey.isEmpty) {
     throw Exception(
@@ -77,7 +74,10 @@ Future<void> init() async {
   }
 
   sl.registerLazySingleton(
-    () => GenerativeModel(model: 'gemini-2.0-flash', apiKey: apiKey),
+    () => GenerativeModel(
+      model: 'gemini-2.0-flash',
+      apiKey: apiKey,
+    ),
   );
 }
 

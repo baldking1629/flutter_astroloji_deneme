@@ -143,6 +143,15 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                         Text(l10n.errorOccurred,
                             style: TextStyle(color: theme.colorScheme.error)),
                         const SizedBox(height: 8),
+                        Text(
+                          state.message,
+                          style: TextStyle(
+                            color: theme.colorScheme.error,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {
                             if (_selectedSign != null &&
