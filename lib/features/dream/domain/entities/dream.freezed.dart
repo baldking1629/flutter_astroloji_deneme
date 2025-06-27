@@ -21,6 +21,7 @@ mixin _$Dream {
   String get content => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   String? get analysis => throw _privateConstructorUsedError;
+  String? get folderId => throw _privateConstructorUsedError;
 
   /// Create a copy of Dream
   /// with the given fields replaced by the non-null parameter values.
@@ -38,7 +39,8 @@ abstract class $DreamCopyWith<$Res> {
       String title,
       String content,
       DateTime date,
-      String? analysis});
+      String? analysis,
+      String? folderId});
 }
 
 /// @nodoc
@@ -61,6 +63,7 @@ class _$DreamCopyWithImpl<$Res, $Val extends Dream>
     Object? content = null,
     Object? date = null,
     Object? analysis = freezed,
+    Object? folderId = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -83,6 +86,10 @@ class _$DreamCopyWithImpl<$Res, $Val extends Dream>
           ? _value.analysis
           : analysis // ignore: cast_nullable_to_non_nullable
               as String?,
+      folderId: freezed == folderId
+          ? _value.folderId
+          : folderId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -99,7 +106,8 @@ abstract class _$$DreamImplCopyWith<$Res> implements $DreamCopyWith<$Res> {
       String title,
       String content,
       DateTime date,
-      String? analysis});
+      String? analysis,
+      String? folderId});
 }
 
 /// @nodoc
@@ -120,6 +128,7 @@ class __$$DreamImplCopyWithImpl<$Res>
     Object? content = null,
     Object? date = null,
     Object? analysis = freezed,
+    Object? folderId = freezed,
   }) {
     return _then(_$DreamImpl(
       id: null == id
@@ -142,6 +151,10 @@ class __$$DreamImplCopyWithImpl<$Res>
           ? _value.analysis
           : analysis // ignore: cast_nullable_to_non_nullable
               as String?,
+      folderId: freezed == folderId
+          ? _value.folderId
+          : folderId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -154,7 +167,8 @@ class _$DreamImpl implements _Dream {
       required this.title,
       required this.content,
       required this.date,
-      this.analysis});
+      this.analysis,
+      this.folderId});
 
   @override
   final String id;
@@ -166,10 +180,12 @@ class _$DreamImpl implements _Dream {
   final DateTime date;
   @override
   final String? analysis;
+  @override
+  final String? folderId;
 
   @override
   String toString() {
-    return 'Dream(id: $id, title: $title, content: $content, date: $date, analysis: $analysis)';
+    return 'Dream(id: $id, title: $title, content: $content, date: $date, analysis: $analysis, folderId: $folderId)';
   }
 
   @override
@@ -182,12 +198,14 @@ class _$DreamImpl implements _Dream {
             (identical(other.content, content) || other.content == content) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.analysis, analysis) ||
-                other.analysis == analysis));
+                other.analysis == analysis) &&
+            (identical(other.folderId, folderId) ||
+                other.folderId == folderId));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, title, content, date, analysis);
+      Object.hash(runtimeType, id, title, content, date, analysis, folderId);
 
   /// Create a copy of Dream
   /// with the given fields replaced by the non-null parameter values.
@@ -204,7 +222,8 @@ abstract class _Dream implements Dream {
       required final String title,
       required final String content,
       required final DateTime date,
-      final String? analysis}) = _$DreamImpl;
+      final String? analysis,
+      final String? folderId}) = _$DreamImpl;
 
   @override
   String get id;
@@ -216,6 +235,8 @@ abstract class _Dream implements Dream {
   DateTime get date;
   @override
   String? get analysis;
+  @override
+  String? get folderId;
 
   /// Create a copy of Dream
   /// with the given fields replaced by the non-null parameter values.

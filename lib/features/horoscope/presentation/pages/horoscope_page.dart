@@ -1,8 +1,14 @@
 import 'package:dreamscope/features/horoscope/presentation/cubit/horoscope_cubit.dart';
+import 'package:dreamscope/features/profile/domain/usecases/get_user_profile.dart';
 import 'package:dreamscope/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dreamscope/features/dream/presentation/widgets/folder_selector.dart';
+import 'package:dreamscope/features/horoscope/domain/entities/saved_horoscope.dart';
+import 'package:dreamscope/features/horoscope/domain/usecases/save_horoscope.dart';
+import 'package:uuid/uuid.dart';
+import 'package:dreamscope/features/dream/presentation/bloc/folder_list/folder_list_bloc.dart';
 
 class HoroscopePage extends StatelessWidget {
   const HoroscopePage({super.key});
@@ -25,7 +31,31 @@ class HoroscopeView extends StatefulWidget {
 
 class _HoroscopeViewState extends State<HoroscopeView> {
   String? _selectedSign;
+  String? _selectedAscendant;
   String? _selectedPeriod;
+  String? _selectedFolderId;
+  String? _selectedFolderName;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final profile = await sl<GetUserProfile>()();
+      if (profile != null) {
+        setState(() {
+          _selectedSign = profile.zodiacSign;
+          _selectedAscendant = profile.ascendant;
+        });
+      }
+    } catch (e) {
+      // Profil yüklenirken hata oluştu
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +110,26 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
+                      value: _selectedAscendant,
+                      hint: const Text('Yükselen Burç Seçin (Opsiyonel)'),
+                      items: [
+                        const DropdownMenuItem<String>(
+                          value: null,
+                          child: Text('Yükselen Burç Yok'),
+                        ),
+                        ...List.generate(signKeys.length, (i) {
+                          return DropdownMenuItem(
+                            value: signKeys[i],
+                            child: Text(signs[i]),
+                          );
+                        }),
+                      ],
+                      onChanged: (value) =>
+                          setState(() => _selectedAscendant = value),
+                      isExpanded: true,
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
                       value: _selectedPeriod,
                       hint: Text(l10n.selectHoroscopePeriod),
                       items: periods.keys.map((period) {
@@ -97,6 +147,7 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                               ? () {
                                   context.read<HoroscopeCubit>().fetchHoroscope(
                                         sign: _selectedSign!,
+                                        ascendant: _selectedAscendant,
                                         period: _selectedPeriod!,
                                         languageCode: l10n.localeName,
                                         date: DateTime.now(),
@@ -116,25 +167,107 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state is HoroscopeLoaded) {
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.horoscopeFor(
-                                l10n.getString(state.horoscope.sign)),
-                            style: theme.textTheme.titleLarge,
+                  return Column(
+                    children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.horoscopeFor(
+                                    l10n.getString(state.horoscope.sign)),
+                                style: theme.textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                state.horoscope.prediction,
+                                style: theme.textTheme.bodyLarge,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 12),
-                          Text(
-                            state.horoscope.prediction,
-                            style: theme.textTheme.bodyLarge,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 16),
+                      BlocBuilder<FolderListBloc, FolderListState>(
+                        bloc: sl<FolderListBloc>()..add(LoadFolders()),
+                        builder: (context, folderState) {
+                          return FolderSelector(
+                            selectedFolderId: _selectedFolderId,
+                            onFolderSelected: (folderId) {
+                              setState(() {
+                                _selectedFolderId = folderId;
+                                if (folderState is FolderListLoaded &&
+                                    folderId != null) {
+                                  final folder = folderState.folders
+                                      .where(
+                                        (f) => f.id == folderId,
+                                      )
+                                      .toList();
+                                  _selectedFolderName = folder.isNotEmpty
+                                      ? folder.first.name
+                                      : null;
+                                } else {
+                                  _selectedFolderName = null;
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.save),
+                          label: _isSaving
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Text('Yorumu Kaydet'),
+                          onPressed: _isSaving
+                              ? null
+                              : () async {
+                                  setState(() => _isSaving = true);
+                                  final savedHoroscope = SavedHoroscope(
+                                    id: const Uuid().v4(),
+                                    zodiacSign: state.horoscope.sign,
+                                    period: state.horoscope.period,
+                                    content: state.horoscope.prediction,
+                                    createdAt: DateTime.now(),
+                                    folderId: _selectedFolderId,
+                                    folderName: _selectedFolderName,
+                                  );
+                                  try {
+                                    await sl<SaveHoroscope>()(savedHoroscope);
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text('Yorum kaydedildi!')),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content:
+                                                Text('Kaydetme hatası: $e')),
+                                      );
+                                    }
+                                  } finally {
+                                    if (mounted)
+                                      setState(() => _isSaving = false);
+                                  }
+                                },
+                        ),
+                      ),
+                    ],
                   );
                 }
                 if (state is HoroscopeError) {
@@ -159,6 +292,7 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                                 _selectedPeriod != null) {
                               context.read<HoroscopeCubit>().fetchHoroscope(
                                     sign: _selectedSign!,
+                                    ascendant: _selectedAscendant,
                                     period: _selectedPeriod!,
                                     languageCode: l10n.localeName,
                                     date: DateTime.now(),

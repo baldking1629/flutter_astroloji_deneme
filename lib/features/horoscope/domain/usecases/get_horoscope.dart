@@ -9,6 +9,7 @@ class GetHoroscope {
   Future<Horoscope> call(GetHoroscopeParams params) async {
     return repository.getHoroscope(
       sign: params.sign,
+      ascendant: params.ascendant,
       period: params.period,
       languageCode: params.languageCode,
       date: params.date,
@@ -18,17 +19,19 @@ class GetHoroscope {
 
 class GetHoroscopeParams extends Equatable {
   final String sign;
+  final String? ascendant;
   final String period;
   final String languageCode;
   final DateTime date;
 
   const GetHoroscopeParams({
     required this.sign,
+    this.ascendant,
     required this.period,
     required this.languageCode,
     required this.date,
   });
 
   @override
-  List<Object?> get props => [sign, period, languageCode, date];
+  List<Object?> get props => [sign, ascendant, period, languageCode, date];
 }

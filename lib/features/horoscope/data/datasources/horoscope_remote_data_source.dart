@@ -5,6 +5,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 abstract class HoroscopeRemoteDataSource {
   Future<HoroscopeModel> getHoroscope({
     required String sign,
+    String? ascendant,
     required String period,
     required String languageCode,
     required DateTime date,
@@ -19,19 +20,20 @@ class GeminiHoroscopeRemoteDataSource implements HoroscopeRemoteDataSource {
   @override
   Future<HoroscopeModel> getHoroscope({
     required String sign,
+    String? ascendant,
     required String period,
     required String languageCode,
     required DateTime date,
   }) async {
-    final prompt = _buildPrompt(sign, period, languageCode, date);
+    final prompt = _buildPrompt(sign, ascendant, period, languageCode, date);
     final content = [Content.text(prompt)];
     final response = await model.generateContent(content);
     final prediction = response.text ?? '';
     return HoroscopeModel(sign: sign, period: period, prediction: prediction);
   }
 
-  String _buildPrompt(
-      String sign, String period, String languageCode, DateTime date) {
+  String _buildPrompt(String sign, String? ascendant, String period,
+      String languageCode, DateTime date) {
     final periodText = {
           'daily': languageCode == 'tr' ? 'günlük' : 'daily',
           'weekly': languageCode == 'tr' ? 'haftalık' : 'weekly',
@@ -56,9 +58,15 @@ class GeminiHoroscopeRemoteDataSource implements HoroscopeRemoteDataSource {
           : '${_enMonthName(date.month)} ${date.year}';
     }
 
+    final ascendantText = ascendant != null
+        ? (languageCode == 'tr'
+            ? '\nYükselen burcu: $ascendant'
+            : '\nAscendant: $ascendant')
+        : '';
+
     if (languageCode == 'tr') {
       return '''
-Lütfen $sign burcu için $formattedDate tarihine özel, profesyonel ve detaylı bir $periodText burç yorumu hazırla.
+Lütfen $sign burcu için $formattedDate tarihine özel, profesyonel ve detaylı bir $periodText burç yorumu hazırla.$ascendantText
 Yorumda şunlara mutlaka yer ver:
 +- Yorumun başında tarih bilgisini belirt.
 +- O gün/hafta/ay için önemli gezegen hareketlerini (örneğin Mars, Venüs, Merkür retrosu, dolunay, yeniay gibi) ve bu hareketlerin $sign burcuna etkilerini açıkla.
@@ -68,7 +76,7 @@ Yorumda şunlara mutlaka yer ver:
 Sadece Türkçe cevap ver.''';
     } else {
       return '''
-Please prepare a professional and detailed $periodText horoscope for $sign for $formattedDate.
+Please prepare a professional and detailed $periodText horoscope for $sign for $formattedDate.$ascendantText
 Include the following in your response:
 +- Clearly state the date at the beginning.
 +- Mention important planetary movements (such as Mars, Venus, Mercury retrograde, full moon, new moon, etc.) and their effects on $sign during this period.

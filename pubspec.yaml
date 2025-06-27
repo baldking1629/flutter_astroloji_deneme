@@ -34,7 +34,6 @@ dependencies:
     sdk: flutter
   
   # Core
-  intl: ^0.19.0
   equatable: ^2.0.5
 
   # State Management

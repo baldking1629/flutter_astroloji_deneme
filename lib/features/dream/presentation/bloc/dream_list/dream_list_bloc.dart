@@ -1,5 +1,6 @@
 import 'package:dreamscope/features/dream/domain/entities/dream.dart';
 import 'package:dreamscope/features/dream/domain/usecases/get_all_dreams.dart';
+import 'package:dreamscope/features/dream/domain/usecases/get_dreams_by_folder.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,9 +11,14 @@ enum DreamSortType { dateDesc, dateAsc, titleAsc, titleDesc }
 
 class DreamListBloc extends Bloc<DreamListEvent, DreamListState> {
   final GetAllDreams getAllDreams;
+  final GetDreamsByFolder getDreamsByFolder;
   DreamSortType _sortType = DreamSortType.dateDesc;
+  String? _currentFolderId;
 
-  DreamListBloc({required this.getAllDreams}) : super(DreamListInitial()) {
+  DreamListBloc({
+    required this.getAllDreams,
+    required this.getDreamsByFolder,
+  }) : super(DreamListInitial()) {
     on<LoadDreams>(_onLoadDreams);
     on<ChangeSortOrder>(_onChangeSortOrder);
   }
@@ -21,7 +27,15 @@ class DreamListBloc extends Bloc<DreamListEvent, DreamListState> {
       LoadDreams event, Emitter<DreamListState> emit) async {
     emit(DreamListLoading());
     try {
-      final dreams = await getAllDreams();
+      _currentFolderId = event.folderId;
+      List<Dream> dreams;
+
+      if (event.folderId != null) {
+        dreams = await getDreamsByFolder(event.folderId!);
+      } else {
+        dreams = await getAllDreams();
+      }
+
       emit(DreamListLoaded(_sortDreams(dreams, _sortType), _sortType));
     } catch (e) {
       emit(DreamListError(e.toString()));
@@ -36,7 +50,7 @@ class DreamListBloc extends Bloc<DreamListEvent, DreamListState> {
       emit(DreamListLoaded(
           _sortDreams(List.from(loaded.dreams), _sortType), _sortType));
     } else {
-      add(LoadDreams());
+      add(LoadDreams(folderId: _currentFolderId));
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dreamscope/presentation/app_blocs/theme/theme_cubit.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -30,6 +31,27 @@ class SettingsView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
+          // Profil Bilgileri
+          _buildSectionCard(
+            context,
+            title: 'Profil Bilgilerim',
+            icon: Icons.person,
+            children: [
+              _buildSettingTile(
+                context,
+                title: 'Profil Düzenle',
+                subtitle:
+                    'Doğum bilgilerinizi ve burç bilgilerinizi güncelleyin',
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  context.push('/profile');
+                },
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
           // Dil Ayarları
           _buildSectionCard(
             context,

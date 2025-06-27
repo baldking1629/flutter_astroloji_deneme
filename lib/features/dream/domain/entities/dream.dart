@@ -10,5 +10,6 @@ class Dream with _$Dream {
     required String content,
     required DateTime date,
     String? analysis,
+    String? folderId,
   }) = _Dream;
 }

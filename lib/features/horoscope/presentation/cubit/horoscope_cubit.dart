@@ -12,6 +12,7 @@ class HoroscopeCubit extends Cubit<HoroscopeState> {
 
   Future<void> fetchHoroscope({
     required String sign,
+    String? ascendant,
     required String period,
     required String languageCode,
     required DateTime date,
@@ -20,6 +21,7 @@ class HoroscopeCubit extends Cubit<HoroscopeState> {
     try {
       final params = GetHoroscopeParams(
         sign: sign,
+        ascendant: ascendant,
         period: period,
         languageCode: languageCode,
         date: date,

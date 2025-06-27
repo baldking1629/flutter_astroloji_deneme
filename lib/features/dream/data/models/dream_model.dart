@@ -14,6 +14,7 @@ class DreamModel with _$DreamModel {
     required String content,
     required DateTime date,
     String? analysis,
+    String? folderId,
   }) = _DreamModel;
 
   factory DreamModel.fromJson(Map<String, dynamic> json) =>
@@ -25,6 +26,7 @@ class DreamModel with _$DreamModel {
         content: content,
         date: date,
         analysis: analysis,
+        folderId: folderId,
       );
 
   factory DreamModel.fromEntity(Dream entity) => DreamModel(
@@ -33,5 +35,6 @@ class DreamModel with _$DreamModel {
         content: entity.content,
         date: entity.date,
         analysis: entity.analysis,
+        folderId: entity.folderId,
       );
 }

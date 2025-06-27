@@ -35,6 +35,14 @@ class DreamRepositoryImpl implements DreamRepository {
   }
 
   @override
+  Future<List<Dream>> getDreamsByFolder(String folderId) async {
+    final dreamModels = await localDataSource.getAllDreams();
+    final filteredModels =
+        dreamModels.where((model) => model.folderId == folderId).toList();
+    return filteredModels.map((model) => model.toEntity()).toList();
+  }
+
+  @override
   Future<Dream?> getDream(String id) async {
     final model = await localDataSource.getDream(id);
     return model?.toEntity();

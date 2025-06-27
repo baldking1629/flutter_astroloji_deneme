@@ -13,6 +13,7 @@ _$DreamModelImpl _$$DreamModelImplFromJson(Map<String, dynamic> json) =>
       content: json['content'] as String,
       date: DateTime.parse(json['date'] as String),
       analysis: json['analysis'] as String?,
+      folderId: json['folderId'] as String?,
     );
 
 Map<String, dynamic> _$$DreamModelImplToJson(_$DreamModelImpl instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$$DreamModelImplToJson(_$DreamModelImpl instance) =>
       'content': instance.content,
       'date': instance.date.toIso8601String(),
       'analysis': instance.analysis,
+      'folderId': instance.folderId,
     };

@@ -25,6 +25,7 @@ mixin _$DreamModel {
   String get content => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
   String? get analysis => throw _privateConstructorUsedError;
+  String? get folderId => throw _privateConstructorUsedError;
 
   /// Serializes this DreamModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,7 +48,8 @@ abstract class $DreamModelCopyWith<$Res> {
       String title,
       String content,
       DateTime date,
-      String? analysis});
+      String? analysis,
+      String? folderId});
 }
 
 /// @nodoc
@@ -70,6 +72,7 @@ class _$DreamModelCopyWithImpl<$Res, $Val extends DreamModel>
     Object? content = null,
     Object? date = null,
     Object? analysis = freezed,
+    Object? folderId = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -92,6 +95,10 @@ class _$DreamModelCopyWithImpl<$Res, $Val extends DreamModel>
           ? _value.analysis
           : analysis // ignore: cast_nullable_to_non_nullable
               as String?,
+      folderId: freezed == folderId
+          ? _value.folderId
+          : folderId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -109,7 +116,8 @@ abstract class _$$DreamModelImplCopyWith<$Res>
       String title,
       String content,
       DateTime date,
-      String? analysis});
+      String? analysis,
+      String? folderId});
 }
 
 /// @nodoc
@@ -130,6 +138,7 @@ class __$$DreamModelImplCopyWithImpl<$Res>
     Object? content = null,
     Object? date = null,
     Object? analysis = freezed,
+    Object? folderId = freezed,
   }) {
     return _then(_$DreamModelImpl(
       id: null == id
@@ -152,6 +161,10 @@ class __$$DreamModelImplCopyWithImpl<$Res>
           ? _value.analysis
           : analysis // ignore: cast_nullable_to_non_nullable
               as String?,
+      folderId: freezed == folderId
+          ? _value.folderId
+          : folderId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -164,7 +177,8 @@ class _$DreamModelImpl extends _DreamModel {
       required this.title,
       required this.content,
       required this.date,
-      this.analysis})
+      this.analysis,
+      this.folderId})
       : super._();
 
   factory _$DreamModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -180,10 +194,12 @@ class _$DreamModelImpl extends _DreamModel {
   final DateTime date;
   @override
   final String? analysis;
+  @override
+  final String? folderId;
 
   @override
   String toString() {
-    return 'DreamModel(id: $id, title: $title, content: $content, date: $date, analysis: $analysis)';
+    return 'DreamModel(id: $id, title: $title, content: $content, date: $date, analysis: $analysis, folderId: $folderId)';
   }
 
   @override
@@ -196,13 +212,15 @@ class _$DreamModelImpl extends _DreamModel {
             (identical(other.content, content) || other.content == content) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.analysis, analysis) ||
-                other.analysis == analysis));
+                other.analysis == analysis) &&
+            (identical(other.folderId, folderId) ||
+                other.folderId == folderId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, title, content, date, analysis);
+      Object.hash(runtimeType, id, title, content, date, analysis, folderId);
 
   /// Create a copy of DreamModel
   /// with the given fields replaced by the non-null parameter values.
@@ -226,7 +244,8 @@ abstract class _DreamModel extends DreamModel {
       required final String title,
       required final String content,
       required final DateTime date,
-      final String? analysis}) = _$DreamModelImpl;
+      final String? analysis,
+      final String? folderId}) = _$DreamModelImpl;
   const _DreamModel._() : super._();
 
   factory _DreamModel.fromJson(Map<String, dynamic> json) =
@@ -242,6 +261,8 @@ abstract class _DreamModel extends DreamModel {
   DateTime get date;
   @override
   String? get analysis;
+  @override
+  String? get folderId;
 
   /// Create a copy of DreamModel
   /// with the given fields replaced by the non-null parameter values.

@@ -10,12 +10,14 @@ class HoroscopeRepositoryImpl implements HoroscopeRepository {
   @override
   Future<Horoscope> getHoroscope({
     required String sign,
+    String? ascendant,
     required String period,
     required String languageCode,
     required DateTime date,
   }) async {
     final model = await remoteDataSource.getHoroscope(
       sign: sign,
+      ascendant: ascendant,
       period: period,
       languageCode: languageCode,
       date: date,

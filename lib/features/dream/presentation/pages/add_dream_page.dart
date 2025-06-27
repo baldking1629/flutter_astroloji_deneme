@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:dreamscope/features/dream/presentation/widgets/folder_selector.dart';
 
 class AddDreamPage extends StatelessWidget {
   const AddDreamPage({super.key});
@@ -30,6 +31,7 @@ class _AddDreamViewState extends State<AddDreamView> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+  String? _selectedFolderId;
 
   @override
   void dispose() {
@@ -110,6 +112,15 @@ class _AddDreamViewState extends State<AddDreamView> {
                           value!.isEmpty ? 'Content cannot be empty' : null,
                     ),
                     const SizedBox(height: 16),
+                    FolderSelector(
+                      selectedFolderId: _selectedFolderId,
+                      onFolderSelected: (folderId) {
+                        setState(() {
+                          _selectedFolderId = folderId;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
@@ -138,11 +149,14 @@ class _AddDreamViewState extends State<AddDreamView> {
                                         title: _titleController.text,
                                         content: _contentController.text,
                                         date: _selectedDate,
+                                        folderId: _selectedFolderId,
                                       ),
                                     );
                               }
                             },
-                      child: Text(l10n.saveAndAnalyzeButton),
+                      child: isSubmitting
+                          ? const CircularProgressIndicator()
+                          : Text(l10n.saveAndAnalyzeButton),
                     ),
                   ],
                 ),
