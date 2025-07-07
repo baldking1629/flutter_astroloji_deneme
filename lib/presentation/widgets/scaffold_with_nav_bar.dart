@@ -14,10 +14,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
         onDestinationSelected: (int index) {
           switch (index) {
             case 0:
-              context.go('/dreams');
+              context.go('/home');
               break;
             case 1:
-              context.go('/folders');
+              context.go('/dreams');
               break;
             case 2:
               context.go('/horoscope');
@@ -30,12 +30,12 @@ class ScaffoldWithNavBar extends StatelessWidget {
         selectedIndex: _calculateSelectedIndex(context),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.nightlight_round),
-            label: 'Rüyalar',
+            icon: Icon(Icons.home),
+            label: 'Anasayfa',
           ),
           NavigationDestination(
-            icon: Icon(Icons.folder),
-            label: 'Klasörler',
+            icon: Icon(Icons.nightlight_round),
+            label: 'Rüyalar',
           ),
           NavigationDestination(
             icon: Icon(Icons.auto_awesome),
@@ -52,9 +52,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/dreams')) {
+    if (location.startsWith('/home')) {
       return 0;
-    } else if (location.startsWith('/folders')) {
+    } else if (location.startsWith('/dreams')) {
       return 1;
     } else if (location.startsWith('/horoscope')) {
       return 2;

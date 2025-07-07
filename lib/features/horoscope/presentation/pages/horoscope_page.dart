@@ -1,4 +1,5 @@
 import 'package:dreamscope/features/horoscope/presentation/cubit/horoscope_cubit.dart';
+import 'package:dreamscope/features/horoscope/data/services/ascendant_calculator_service.dart';
 import 'package:dreamscope/features/profile/domain/usecases/get_user_profile.dart';
 import 'package:dreamscope/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,6 +37,8 @@ class _HoroscopeViewState extends State<HoroscopeView> {
   String? _selectedFolderId;
   String? _selectedFolderName;
   bool _isSaving = false;
+  bool _useCalculatedAscendant = false;
+  String? _calculatedAscendant;
 
   @override
   void initState() {
@@ -49,11 +52,36 @@ class _HoroscopeViewState extends State<HoroscopeView> {
       if (profile != null) {
         setState(() {
           _selectedSign = profile.zodiacSign;
-          _selectedAscendant = profile.ascendant;
+          
+          // Eğer profilde yükselen burç yoksa otomatik hesapla
+          if (profile.ascendant != null && profile.ascendant!.isNotEmpty) {
+            _selectedAscendant = profile.ascendant;
+          } else {
+            // Yükselen burcu hesapla
+            _calculateAscendant(profile);
+          }
         });
       }
     } catch (e) {
       // Profil yüklenirken hata oluştu
+    }
+  }
+
+  void _calculateAscendant(profile) {
+    if (profile.birthTime.isNotEmpty) {
+      final calculatedAscendant = AscendantCalculatorService.calculateAscendant(
+        sunSign: profile.zodiacSign,
+        birthTime: profile.birthTime,
+        birthDate: profile.birthDate,
+      );
+      
+      if (calculatedAscendant != null) {
+        setState(() {
+          _calculatedAscendant = calculatedAscendant;
+          _selectedAscendant = calculatedAscendant;
+          _useCalculatedAscendant = true;
+        });
+      }
     }
   }
 
@@ -94,7 +122,16 @@ class _HoroscopeViewState extends State<HoroscopeView> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      'Burç Bilgileriniz',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       value: _selectedSign,
                       hint: Text(l10n.selectHoroscopeSign),
@@ -109,25 +146,79 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                       isExpanded: true,
                     ),
                     const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      value: _selectedAscendant,
-                      hint: const Text('Yükselen Burç Seçin (Opsiyonel)'),
-                      items: [
-                        const DropdownMenuItem<String>(
-                          value: null,
-                          child: Text('Yükselen Burç Yok'),
+                    
+                    // Yükselen burç seçimi/hesaplama
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedAscendant,
+                            hint: const Text('Yükselen Burç'),
+                            items: [
+                              const DropdownMenuItem<String>(
+                                value: null,
+                                child: Text('Yükselen Burç Yok'),
+                              ),
+                              ...List.generate(signKeys.length, (i) {
+                                return DropdownMenuItem(
+                                  value: signKeys[i],
+                                  child: Text(signs[i]),
+                                );
+                              }),
+                            ],
+                            onChanged: (value) =>
+                                setState(() => _selectedAscendant = value),
+                            isExpanded: true,
+                          ),
                         ),
-                        ...List.generate(signKeys.length, (i) {
-                          return DropdownMenuItem(
-                            value: signKeys[i],
-                            child: Text(signs[i]),
-                          );
-                        }),
+                        if (_calculatedAscendant != null) ...[
+                          const SizedBox(width: 8),
+                          IconButton(
+                            onPressed: () => _showAscendantInfo(context),
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: theme.colorScheme.primary,
+                            ),
+                            tooltip: 'Hesaplanan Yükselen Burç',
+                          ),
+                        ],
                       ],
-                      onChanged: (value) =>
-                          setState(() => _selectedAscendant = value),
-                      isExpanded: true,
                     ),
+                    
+                    if (_calculatedAscendant != null) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: theme.colorScheme.primary.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.calculate,
+                              size: 16,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Hesaplanan Yükselen: ${AscendantCalculatorService.getSignNameInTurkish(_calculatedAscendant!)}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       value: _selectedPeriod,
@@ -141,20 +232,23 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                       isExpanded: true,
                     ),
                     const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed:
-                          (_selectedSign != null && _selectedPeriod != null)
-                              ? () {
-                                  context.read<HoroscopeCubit>().fetchHoroscope(
-                                        sign: _selectedSign!,
-                                        ascendant: _selectedAscendant,
-                                        period: _selectedPeriod!,
-                                        languageCode: l10n.localeName,
-                                        date: DateTime.now(),
-                                      );
-                                }
-                              : null,
-                      child: Text(l10n.getHoroscopeButton),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed:
+                            (_selectedSign != null && _selectedPeriod != null)
+                                ? () {
+                                    context.read<HoroscopeCubit>().fetchHoroscope(
+                                          sign: _selectedSign!,
+                                          ascendant: _selectedAscendant,
+                                          period: _selectedPeriod!,
+                                          languageCode: l10n.localeName,
+                                          date: DateTime.now(),
+                                        );
+                                  }
+                                : null,
+                        child: Text(l10n.getHoroscopeButton),
+                      ),
                     ),
                   ],
                 ),
@@ -175,10 +269,21 @@ class _HoroscopeViewState extends State<HoroscopeView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                l10n.horoscopeFor(
-                                    l10n.getString(state.horoscope.sign)),
-                                style: theme.textTheme.titleLarge,
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.auto_awesome,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      l10n.horoscopeFor(
+                                          l10n.getString(state.horoscope.sign)),
+                                      style: theme.textTheme.titleLarge,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 12),
                               Text(
@@ -310,6 +415,67 @@ class _HoroscopeViewState extends State<HoroscopeView> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showAscendantInfo(BuildContext context) {
+    if (_calculatedAscendant == null) return;
+    
+    final theme = Theme.of(context);
+    final signName = AscendantCalculatorService.getSignNameInTurkish(_calculatedAscendant!);
+    final description = AscendantCalculatorService.getAscendantDescription(_calculatedAscendant!);
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.calculate, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Text('Yükselen Burç: $signName'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              description,
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Not:',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Bu hesaplama yaklaşık bir değerdir. Kesin yükselen burç hesaplama için doğum yeri koordinatları ve tam doğum saati gereklidir.',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tamam'),
+          ),
+        ],
       ),
     );
   }
