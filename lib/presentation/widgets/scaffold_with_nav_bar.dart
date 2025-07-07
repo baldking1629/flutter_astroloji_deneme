@@ -10,42 +10,111 @@ class ScaffoldWithNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: child,
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          switch (index) {
-            case 0:
-              context.go('/home');
-              break;
-            case 1:
-              context.go('/dreams');
-              break;
-            case 2:
-              context.go('/horoscope');
-              break;
-            case 3:
-              context.go('/settings');
-              break;
-          }
-        },
-        selectedIndex: _calculateSelectedIndex(context),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: 'Anasayfa',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surface.withOpacity(0.95),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          NavigationDestination(
-            icon: Icon(Icons.nightlight_round),
-            label: 'Rüyalar',
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Container(
+            height: 70,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  context,
+                  icon: Icons.home_rounded,
+                  label: 'Anasayfa',
+                  index: 0,
+                  route: '/home',
+                ),
+                _buildNavItem(
+                  context,
+                  icon: Icons.nightlight_round,
+                  label: 'Rüyalar',
+                  index: 1,
+                  route: '/dreams',
+                ),
+                _buildNavItem(
+                  context,
+                  icon: Icons.auto_awesome,
+                  label: 'Burç',
+                  index: 2,
+                  route: '/horoscope',
+                ),
+                _buildNavItem(
+                  context,
+                  icon: Icons.settings_rounded,
+                  label: 'Ayarlar',
+                  index: 3,
+                  route: '/settings',
+                ),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.auto_awesome),
-            label: 'Burç',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: 'Ayarlar',
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required int index,
+    required String route,
+  }) {
+    final theme = Theme.of(context);
+    final isSelected = _calculateSelectedIndex(context) == index;
+    
+    return GestureDetector(
+      onTap: () => context.go(route),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: isSelected 
+              ? theme.colorScheme.primaryContainer.withOpacity(0.3)
+              : Colors.transparent,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.6),
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
