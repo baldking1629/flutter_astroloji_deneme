@@ -5,6 +5,7 @@ abstract class DreamLocalDataSource {
   Future<List<DreamModel>> getAllDreams();
   Future<DreamModel?> getDream(String id);
   Future<void> saveDream(DreamModel dream);
+  Future<void> updateDream(DreamModel dream);
   Future<void> deleteDream(String id);
 }
 
@@ -39,6 +40,11 @@ class SembastDreamLocalDataSource implements DreamLocalDataSource {
 
   @override
   Future<void> saveDream(DreamModel dream) async {
+    await _store.record(dream.id).put(_database, dream.toJson());
+  }
+
+  @override
+  Future<void> updateDream(DreamModel dream) async {
     await _store.record(dream.id).put(_database, dream.toJson());
   }
 }

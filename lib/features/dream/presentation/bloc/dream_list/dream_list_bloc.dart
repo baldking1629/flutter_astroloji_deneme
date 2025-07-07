@@ -1,6 +1,7 @@
 import 'package:dreamscope/features/dream/domain/entities/dream.dart';
 import 'package:dreamscope/features/dream/domain/usecases/get_all_dreams.dart';
 import 'package:dreamscope/features/dream/domain/usecases/get_dreams_by_folder.dart';
+import 'package:dreamscope/features/dream/domain/usecases/update_dream.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,15 +13,18 @@ enum DreamSortType { dateDesc, dateAsc, titleAsc, titleDesc }
 class DreamListBloc extends Bloc<DreamListEvent, DreamListState> {
   final GetAllDreams getAllDreams;
   final GetDreamsByFolder getDreamsByFolder;
+  final UpdateDream updateDream;
   DreamSortType _sortType = DreamSortType.dateDesc;
   String? _currentFolderId;
 
   DreamListBloc({
     required this.getAllDreams,
     required this.getDreamsByFolder,
+    required this.updateDream,
   }) : super(DreamListInitial()) {
     on<LoadDreams>(_onLoadDreams);
     on<ChangeSortOrder>(_onChangeSortOrder);
+    on<MoveDreamToFolder>(_onMoveDreamToFolder);
   }
 
   Future<void> _onLoadDreams(
@@ -51,6 +55,25 @@ class DreamListBloc extends Bloc<DreamListEvent, DreamListState> {
           _sortDreams(List.from(loaded.dreams), _sortType), _sortType));
     } else {
       add(LoadDreams(folderId: _currentFolderId));
+    }
+  }
+
+  Future<void> _onMoveDreamToFolder(
+      MoveDreamToFolder event, Emitter<DreamListState> emit) async {
+    try {
+      if (state is DreamListLoaded) {
+        final loaded = state as DreamListLoaded;
+        final dreamToMove = loaded.dreams.firstWhere((d) => d.id == event.dreamId);
+        
+        // Rüyayı yeni klasör ile güncelle
+        final updatedDream = dreamToMove.copyWith(folderId: event.folderId);
+        await updateDream(updatedDream);
+        
+        // Listeyi yeniden yükle
+        add(LoadDreams(folderId: _currentFolderId));
+      }
+    } catch (e) {
+      emit(DreamListError(e.toString()));
     }
   }
 

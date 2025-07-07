@@ -53,4 +53,10 @@ class DreamRepositoryImpl implements DreamRepository {
     final dreamModel = DreamModel.fromEntity(dream);
     return localDataSource.saveDream(dreamModel);
   }
+
+  @override
+  Future<void> updateDream(Dream dream) async {
+    final dreamModel = DreamModel.fromEntity(dream);
+    return localDataSource.updateDream(dreamModel);
+  }
 }
