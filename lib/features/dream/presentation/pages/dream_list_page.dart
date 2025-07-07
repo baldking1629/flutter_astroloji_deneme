@@ -2,7 +2,6 @@ import 'package:dreamscope/features/dream/presentation/bloc/dream_list/dream_lis
 import 'package:dreamscope/features/dream/presentation/bloc/folder_list/folder_list_bloc.dart';
 import 'package:dreamscope/features/dream/presentation/widgets/dream_card.dart';
 import 'package:dreamscope/features/dream/presentation/widgets/folder_card.dart';
-import 'package:dreamscope/features/profile/domain/usecases/get_user_profile.dart';
 import 'package:dreamscope/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -42,9 +41,7 @@ class DreamListView extends StatefulWidget {
 
 class _DreamListViewState extends State<DreamListView>
     with SingleTickerProviderStateMixin {
-  String? _userSign;
-  String? _userAscendant;
-  bool _isLoadingProfile = true;
+
   late TabController _tabController;
 
   @override
@@ -56,7 +53,6 @@ class _DreamListViewState extends State<DreamListView>
       initialIndex:
           widget.folderId != null ? 0 : 0, // Varsayılan olarak rüyalar tab'ı
     );
-    _loadUserProfile();
   }
 
   @override
@@ -65,23 +61,7 @@ class _DreamListViewState extends State<DreamListView>
     super.dispose();
   }
 
-  Future<void> _loadUserProfile() async {
-    try {
-      final profile = await sl<GetUserProfile>()();
-      if (profile != null) {
-        setState(() {
-          _userSign = profile.zodiacSign;
-          _userAscendant = profile.ascendant;
-        });
-      }
-    } catch (e) {
-      // Profil yüklenirken hata oluştu
-    } finally {
-      setState(() {
-        _isLoadingProfile = false;
-      });
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -271,15 +251,7 @@ class _DreamListViewState extends State<DreamListView>
                     },
                   ),
 
-                // Kişisel Burç Yorumu Kısayolu (sadece ana sayfada ve profil varsa)
-                if (widget.folderId == null &&
-                    !_isLoadingProfile &&
-                    _userSign != null)
-                  _buildPersonalHoroscopeCard(context, theme),
-                if (widget.folderId == null &&
-                    !_isLoadingProfile &&
-                    _userSign != null)
-                  const SizedBox(height: 16),
+
 
                 // Rüya Listesi
                 if (state.dreams.isEmpty)
@@ -405,107 +377,7 @@ class _DreamListViewState extends State<DreamListView>
     );
   }
 
-  Widget _buildPersonalHoroscopeCard(BuildContext context, ThemeData theme) {
-    final signNames = {
-      'aries': 'Koç',
-      'taurus': 'Boğa',
-      'gemini': 'İkizler',
-      'cancer': 'Yengeç',
-      'leo': 'Aslan',
-      'virgo': 'Başak',
-      'libra': 'Terazi',
-      'scorpio': 'Akrep',
-      'sagittarius': 'Yay',
-      'capricorn': 'Oğlak',
-      'aquarius': 'Kova',
-      'pisces': 'Balık'
-    };
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: [
-              theme.colorScheme.primary.withOpacity(0.1),
-              theme.colorScheme.secondary.withOpacity(0.1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.auto_awesome,
-                    color: theme.colorScheme.primary,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Kişisel Burç Yorumunuz',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Burç: ${signNames[_userSign] ?? _userSign}',
-                style: theme.textTheme.bodyLarge,
-              ),
-              if (_userAscendant != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  'Yükselen: ${signNames[_userAscendant] ?? _userAscendant}',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  ),
-                ),
-              ],
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.push('/horoscope');
-                      },
-                      icon: const Icon(Icons.psychology),
-                      label: const Text('Günlük Yorum'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        context.push('/profile');
-                      },
-                      icon: const Icon(Icons.person),
-                      label: const Text('Profil'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   void _showAddFolderDialog(BuildContext context) {
     final controller = TextEditingController();
