@@ -41,7 +41,6 @@ class DreamListView extends StatefulWidget {
 
 class _DreamListViewState extends State<DreamListView>
     with SingleTickerProviderStateMixin {
-
   late TabController _tabController;
 
   @override
@@ -60,8 +59,6 @@ class _DreamListViewState extends State<DreamListView>
     _tabController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -159,26 +156,27 @@ class _DreamListViewState extends State<DreamListView>
           ),
         ],
       ),
-      body: widget.folderId != null
-          ? _buildDreamsList(context, theme, l10n)
-          : TabBarView(
-              controller: _tabController,
-              children: [
-                _buildDreamsList(context, theme, l10n),
-                _buildFoldersList(context, theme),
-              ],
-            ),
+      body: SafeArea(
+        child: widget.folderId != null
+            ? _buildDreamsList(context, theme, l10n)
+            : TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildDreamsList(context, theme, l10n),
+                  _buildFoldersList(context, theme),
+                ],
+              ),
+      ),
       floatingActionButton: widget.folderId != null ||
               (widget.folderId == null && _tabController.index == 0)
           ? FloatingActionButton(
-              onPressed: () {
-                context.push('/add-dream').then((result) {
-                  if (result == true) {
-                    context
-                        .read<DreamListBloc>()
-                        .add(LoadDreams(folderId: widget.folderId));
-                  }
-                });
+              onPressed: () async {
+                final result = await context.push('/add-dream');
+                if (result == true && mounted) {
+                  context
+                      .read<DreamListBloc>()
+                      .add(LoadDreams(folderId: widget.folderId));
+                }
               },
               tooltip: l10n.addDreamHint,
               child: const Icon(Icons.add),
@@ -250,8 +248,6 @@ class _DreamListViewState extends State<DreamListView>
                       return const SizedBox.shrink();
                     },
                   ),
-
-
 
                 // Rüya Listesi
                 if (state.dreams.isEmpty)
@@ -376,8 +372,6 @@ class _DreamListViewState extends State<DreamListView>
       },
     );
   }
-
-
 
   void _showAddFolderDialog(BuildContext context) {
     final controller = TextEditingController();

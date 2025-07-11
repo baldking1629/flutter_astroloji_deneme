@@ -8,6 +8,7 @@ import 'package:dreamscope/features/dream/domain/usecases/delete_dream.dart';
 import 'package:dreamscope/features/dream/domain/usecases/get_all_dreams.dart';
 import 'package:dreamscope/features/dream/domain/usecases/get_dream.dart';
 import 'package:dreamscope/features/dream/domain/usecases/save_dream.dart';
+import 'package:dreamscope/features/dream/domain/usecases/update_dream.dart';
 import 'package:dreamscope/features/dream/presentation/bloc/dream_form/dream_form_bloc.dart';
 import 'package:dreamscope/features/dream/presentation/bloc/dream_list/dream_list_bloc.dart';
 import 'package:dreamscope/features/horoscope/data/datasources/horoscope_remote_data_source.dart';
@@ -52,6 +53,8 @@ import 'package:dreamscope/features/dream/domain/usecases/get_all_folders.dart';
 import 'package:dreamscope/features/dream/domain/usecases/save_folder.dart';
 import 'package:dreamscope/features/dream/domain/usecases/delete_folder.dart'
     as folder_usecase;
+import 'package:dreamscope/features/dream/domain/usecases/delete_dream.dart'
+    as dream_usecase;
 import 'package:dreamscope/features/dream/presentation/bloc/folder_list/folder_list_bloc.dart';
 import 'package:dreamscope/features/dream/domain/usecases/get_dreams_by_folder.dart';
 import 'package:dreamscope/features/dream/domain/usecases/update_folder_dream_count.dart';
@@ -109,6 +112,8 @@ void _registerDreamFeature() {
   sl.registerFactory(() => DreamListBloc(
         getAllDreams: sl(),
         getDreamsByFolder: sl(),
+        updateDream: sl(),
+        deleteDream: sl(),
       ));
   sl.registerFactory(() => DreamFormBloc(
         saveDream: sl(),
@@ -126,7 +131,8 @@ void _registerDreamFeature() {
   sl.registerLazySingleton(() => GetAllDreams(sl()));
   sl.registerLazySingleton(() => GetDream(sl()));
   sl.registerLazySingleton(() => SaveDream(sl()));
-  sl.registerLazySingleton(() => DeleteDream(sl(), sl()));
+  sl.registerLazySingleton(() => UpdateDream(sl(), sl()));
+  sl.registerLazySingleton(() => dream_usecase.DeleteDream(sl(), sl()));
   sl.registerLazySingleton(() => AnalyzeDream(sl()));
   sl.registerLazySingleton(() => GetDreamsByFolder(sl()));
   sl.registerLazySingleton(() => UpdateFolderDreamCount(

@@ -1,4 +1,5 @@
 import 'package:dreamscope/features/dream/presentation/bloc/dream_form/dream_form_bloc.dart';
+import 'package:dreamscope/features/dream/presentation/bloc/folder_list/folder_list_bloc.dart';
 import 'package:dreamscope/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,12 @@ class AddDreamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<DreamFormBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<DreamFormBloc>()),
+        BlocProvider(
+            create: (context) => sl<FolderListBloc>()..add(LoadFolders())),
+      ],
       child: const AddDreamView(),
     );
   }
@@ -66,6 +71,7 @@ class _AddDreamViewState extends State<AddDreamView> {
       ),
       body: BlocConsumer<DreamFormBloc, DreamFormState>(
         listener: (context, state) {
+          if (!mounted) return;
           if (state is DreamFormSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

@@ -38,6 +38,7 @@ class HomeView extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('DreamScope'),
         actions: [
@@ -53,30 +54,29 @@ class HomeView extends StatelessWidget {
           context.read<FolderListBloc>().add(LoadFolders());
           context.read<SavedHoroscopeCubit>().loadSavedHoroscopes();
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Hoşgeldin kartı
-              _buildWelcomeCard(context, theme),
-              const SizedBox(height: 20),
-              
-              // Hızlı aksiyonlar
-              _buildQuickActions(context, theme),
-              const SizedBox(height: 20),
-              
-              // Son rüyalar
-              _buildRecentDreams(context, theme),
-              const SizedBox(height: 20),
-              
-              // Rüya klasörleri
-              _buildDreamFolders(context, theme),
-              const SizedBox(height: 20),
-              
-              // Son burç yorumları
-              _buildRecentHoroscopes(context, theme),
-            ],
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Hoşgeldin kartı
+                _buildWelcomeCard(context, theme),
+                const SizedBox(height: 20),
+                // Hızlı aksiyonlar
+                _buildQuickActions(context, theme),
+                const SizedBox(height: 20),
+                // Son rüyalar
+                _buildRecentDreams(context, theme),
+                const SizedBox(height: 20),
+                // Rüya klasörleri
+                _buildDreamFolders(context, theme),
+                const SizedBox(height: 20),
+                // Son burç yorumları
+                _buildRecentHoroscopes(context, theme),
+              ],
+            ),
           ),
         ),
       ),
@@ -331,7 +331,8 @@ class HomeView extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 folder.name,
-                                style: const TextStyle(fontWeight: FontWeight.w600),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -398,13 +399,15 @@ class HomeView extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 8),
                     child: ListTile(
                       leading: const Icon(Icons.auto_awesome),
-                      title: Text('${horoscope.zodiacSign.toUpperCase()} - ${horoscope.period}'),
+                      title: Text(
+                          '${horoscope.zodiacSign.toUpperCase()} - ${horoscope.period}'),
                       subtitle: Text(
                         horoscope.content,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      onTap: () => context.push('/horoscope-detail/${horoscope.id}'),
+                      onTap: () =>
+                          context.push('/horoscope-detail/${horoscope.id}'),
                     ),
                   );
                 }).toList(),
